@@ -5,13 +5,20 @@ from datetime import datetime
 from cat.mad_hatter.decorators import tool
 from cat.log import log
 
-# Path to template
+# Path to templates
 TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_iso26262.json")
+GUIDANCE_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_template_guidance.json")
 
 @tool(return_direct=True)
 def generate_iso_26262_item_definition(tool_input, cat):
     """
     Generate a structured, ISO 26262-3:2018 compliant Item Definition for an automotive system.
+    This creates a COMPLETE item definition with LLM-generated content for a specific system.
+
+    Use this tool when the user asks to:
+    - "Generate item definition for [system name]"
+    - "Create ISO 26262 item definition for [system]"
+    - "Develop item definition for [system]"
 
     - You are acting as a certified Functional Safety Engineer (ISO 26262).
     - Use formal, precise, technical language. Avoid casual tone, humor, metaphors, or jokes.
@@ -31,7 +38,8 @@ def generate_iso_26262_item_definition(tool_input, cat):
     If tool_input is string, tries to parse as JSON. Otherwise, uses defaults.
     """
     
-    print("✅✅✅✅✅✅✅✅ TOOL CALLED: DEVELOP ITEM DEFINITION TEMPLATE ✅✅✅✅✅✅✅✅✅✅✅")
+    print("✅ TOOL CALLED: generate_iso_26262_item_definition")
+    
     # Default values
     system_name = "Unknown System"
     system_id = ""
@@ -157,5 +165,167 @@ def generate_iso_26262_item_definition(tool_input, cat):
     # ✅ SET WORKING MEMORY FLAG FOR FORMATTER PLUGIN
     cat.working_memory["document_type"] = "item_definition"
     cat.working_memory["system_name"] = system_name
+    
+    return "\n".join(output_lines)
+
+@tool(return_direct=True)
+def generate_item_definition_template(tool_input, cat):
+    """
+    Generate a ISO 26262 Item Definition template.
+
+     Use this tool when the user asks to:
+    - "Generate item definition template"
+    - "Create ISO 26262 item definition template"
+    - "Develop item definition template"
+
+    """
+    
+    print("✅ TOOL CALLED: generate_item_definition_template")
+    
+    # Parse system name if provided
+    system_name = "[Item Name]"
+    if isinstance(tool_input, str) and tool_input.strip():
+        system_name = tool_input.strip()
+    elif isinstance(tool_input, dict):
+        system_name = tool_input.get("system_name", system_name)
+    
+    # Load the template guidance JSON
+    try:
+        with open(GUIDANCE_TEMPLATE_PATH, 'r', encoding='utf-8') as f:
+            template = json.load(f)
+    except Exception as e:
+        log.error(f"Failed to load template guidance: {e}")
+        return "❌ Error: Could not load Item Definition template guidance."
+    
+    # Build content in markdown format
+    output_lines = []
+    
+    # Header
+    now_str = datetime.now().strftime("%Y-%m-%d")
+    output_lines.append(f"# ISO 26262 Item Definition: {system_name}")
+    output_lines.append(f"*Work Product: {template['metadata']['work_product']}*")
+    output_lines.append(f"*Generated on: {now_str}*")
+    output_lines.append(f"*Document Type: {template['metadata']['document_type']}*")
+    output_lines.append("")
+    
+    # Process each section
+    for sec_key, sec_data in template["sections"].items():
+        if "title" not in sec_data:
+            continue
+        
+        # Section title
+        output_lines.append(f"## {sec_data['title']}")
+        if "clause_ref" in sec_data:
+            output_lines.append(f"*Clause: {sec_data['clause_ref']}*")
+        output_lines.append("")
+        
+        # Handle subsections
+        if "subsections" in sec_data:
+            for sub_key, sub_data in sec_data["subsections"].items():
+                output_lines.append(f"### {sub_data['title']}")
+                if "clause_ref" in sub_data:
+                    output_lines.append(f"*Clause: {sub_data['clause_ref']}*")
+                output_lines.append("")
+                
+                # Add guidance
+                if "guidance" in sub_data:
+                    output_lines.append("**Guidance:**")
+                    output_lines.append(sub_data["guidance"])
+                    output_lines.append("")
+                
+                # Add format if present
+                if "format" in sub_data:
+                    output_lines.append("**Format:**")
+                    output_lines.append(sub_data["format"])
+                    output_lines.append("")
+                
+                # Add examples if present
+                if "examples" in sub_data:
+                    output_lines.append("**Examples:**")
+                    for example in sub_data["examples"]:
+                        output_lines.append(f"- {example}")
+                    output_lines.append("")
+                
+                # Add modes to consider if present
+                if "modes_to_consider" in sub_data:
+                    output_lines.append("**Operating Modes to Consider:**")
+                    for mode in sub_data["modes_to_consider"]:
+                        output_lines.append(f"- {mode}")
+                    output_lines.append("")
+                
+                # Add categories if present - FIX HERE
+                if "categories" in sub_data:
+                    categories = sub_data["categories"]
+                    # Check if it's a dict or list
+                    if isinstance(categories, dict):
+                        for cat_name, cat_items in categories.items():
+                            cat_title = cat_name.replace("_", " ").title()
+                            output_lines.append(f"**{cat_title}:**")
+                            if isinstance(cat_items, list):
+                                for item in cat_items:
+                                    output_lines.append(f"- {item}")
+                            else:
+                                output_lines.append(str(cat_items))
+                            output_lines.append("")
+                    elif isinstance(categories, list):
+                        output_lines.append("**Categories:**")
+                        for item in categories:
+                            output_lines.append(f"- {item}")
+                        output_lines.append("")
+                
+                # Add structure if present
+                if "structure" in sub_data:
+                    for struct_name, struct_content in sub_data["structure"].items():
+                        struct_title = struct_name.replace("_", " ").title()
+                        output_lines.append(f"**{struct_title}:**")
+                        output_lines.append(struct_content)
+                        output_lines.append("")
+                
+                # Add note if present
+                if "note" in sub_data:
+                    output_lines.append(f"*Note: {sub_data['note']}*")
+                    output_lines.append("")
+                
+                # Add scenarios to consider if present
+                if "scenarios_to_consider" in sub_data:
+                    output_lines.append("**Scenarios to Consider:**")
+                    for scenario in sub_data["scenarios_to_consider"]:
+                        output_lines.append(f"- {scenario}")
+                    output_lines.append("")
+                
+                output_lines.append("---")
+                output_lines.append("")
+        
+        else:
+            # Top-level section without subsections
+            if "guidance" in sec_data:
+                output_lines.append("**Guidance:**")
+                output_lines.append(sec_data["guidance"])
+                output_lines.append("")
+            
+            if "example" in sec_data:
+                output_lines.append("**Example:**")
+                output_lines.append(sec_data["example"])
+                output_lines.append("")
+            
+            if "roles" in sec_data:
+                output_lines.append("**Approval Roles:**")
+                for role in sec_data["roles"]:
+                    output_lines.append(f"- {role}: ____________ (Signature) ________ (Date)")
+                output_lines.append("")
+            
+            if "configuration_items" in sec_data:
+                output_lines.append("**Configuration Management:**")
+                for item in sec_data["configuration_items"]:
+                    output_lines.append(f"- {item}")
+                output_lines.append("")
+            
+            output_lines.append("---")
+            output_lines.append("")
+    
+    # Set working memory flags for formatter
+    cat.working_memory["document_type"] = "item_definition"
+    cat.working_memory["system_name"] = system_name
+    cat.working_memory["is_template"] = True
     
     return "\n".join(output_lines)
