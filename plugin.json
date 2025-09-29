@@ -1,5 +1,10 @@
 {
-  "name": "ISO 26262 Item Definition Developer",
-  "version": "0.1",
-  "description": "Develop an Item Definition based on user information"
+  "name": "[Kineton] ISO 26262 Item Definition Developer",
+  "version": "0.0.1",
+  "description": "A plugin that enables AI agents to develop an Item Definition work product on a specific Item, or to create an Item definition template",
+  "author_name": "Tonino De Nigris",
+  "author_url": "https://github.com/tondeni",
+  "plugin_url": "https://github.com/tondeni/AI_Agent-ItemDefinition_Developer",
+  "tags": "ISO26262, FuSa, Functional Safety",
+  "thumb": "https://github.com/tondeni/AI_Agent-ItemDefinition_Developer/blob/master/assets/FuSa_AI_Agent_Plugin_logo.png?raw=true"
 }
