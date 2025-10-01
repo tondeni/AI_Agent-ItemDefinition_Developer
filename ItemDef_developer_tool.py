@@ -12,23 +12,20 @@ GUIDANCE_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "i
 @tool(return_direct=True)
 def generate_iso_26262_item_definition(tool_input, cat):
     """
-    Generate a structured, ISO 26262-3:2018 compliant Item Definition for an automotive system.
-    This creates a COMPLETE item definition with LLM-generated content for a specific system.
+    Create a ISO 26262 Item Definition work product for an automotive system.
 
     Use this tool when the user asks to:
     - "Generate item definition for [system name]"
     - "Create ISO 26262 item definition for [system]"
     - "Develop item definition for [system]"
 
-    - You are acting as a certified Functional Safety Engineer (ISO 26262).
-    - Use formal, precise, technical language. Avoid casual tone, humor, metaphors, or jokes.
-    - Use an impersonal professional language. Make the item the main subject of the document
-    - Focus on clarity, traceability, and completeness – as required by functional safety standards.
-    - Structure content logically: define scope, interfaces, modes, constraints, and safety-related assumptions.
-    - Use passive voice where appropriate (e.g., "The system shall...", "It is assumed that...").
-    - Prioritize unambiguous terminology (e.g., "The BMS shall monitor cell voltage" not "The BMS watches the battery").
-    - If uncertain, state assumptions explicitly rather than guessing.
-
+    IMPORTANT: 
+    - Use formal, precise, technical language.
+    - **DO NOT USE TABLES.**
+    - Present all information in fluent, structured paragraphs.
+    - Use bullet points only for simple lists (e.g., modes, constraints).
+    - Avoid markdown formatting like **bold** or *italic*.
+    
     Expected tool_input format (JSON string or dict):
         {
             "system_name": "Battery Management System",
@@ -323,6 +320,10 @@ def generate_item_definition_template(tool_input, cat):
             output_lines.append("---")
             output_lines.append("")
     
+    # Store the generated content in working memory for other plugins (like HARA)
+    generated_content = "\n".join(output_lines)
+    cat.working_memory["item_definition_content"] = generated_content
+
     # Set working memory flags for formatter
     cat.working_memory["document_type"] = "item_definition"
     cat.working_memory["system_name"] = system_name

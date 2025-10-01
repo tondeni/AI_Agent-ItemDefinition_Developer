@@ -15,7 +15,7 @@
     "1_introduction": {
       "title": "1. Introduction",
       "clause_ref": "5.1, 5.2",
-      "prompt": "Introduce the {system_name} as the 'Item' defined under ISO 26262-3:2018. Clearly articulate its primary function within the vehicle system architecture and its significance from a functional safety perspective. Explain the critical role this Item Definition plays as the foundational document for subsequent Hazard Analysis and Risk Assessment (HARA) and the development of the Functional Safety Concept, ensuring alignment among all relevant stakeholders.",
+      "prompt": "State the purpose of this document: to define the '{system_name}' as the 'Item' per ISO 26262-3:2018. Specify its role in the vehicle system architecture and its relevance to functional safety. Do not include background, history, or general statements. Focus only on scope and safety context.",
       "weight": 1.0,
       "content": ""
     },
@@ -26,42 +26,42 @@
         "2_1_legal_requirements": {
           "title": "2.1 Legal Requirements, National and International Standards",
           "clause_ref": "5.4.1 a)",
-          "prompt": "Provide a comprehensive overview of the legal regulations, national standards, and international standards applicable to the design, development, testing, and safety validation of the {system_name}. Detail how standards such as UNECE R100, ISO 6469, ISO 26262, and IEC 61508 specifically govern its functional safety requirements.",
+          "prompt": "List only the legal, national, and international standards that directly apply to the '{system_name}'. For each, specify its relevance to functional safety (e.g., 'UNECE R100: mandates electrical safety during charging'). Avoid generic lists; include only standards that impose safety-related constraints on this item.",
           "weight": 1.0,
           "content": ""
         },
         "2_2_functional_behaviour": {
           "title": "2.2 Functional Behaviour at Vehicle Level",
           "clause_ref": "5.4.1 b)",
-          "prompt": "Describe the functional behavior of the {system_name} across various vehicle operational contexts. Detail its expected performance during distinct operating modes, including but not limited to Standby, Pre-Charge, Driving, Charging, Thermal Management, Fault, and Sleep modes. Explain the primary functions executed and the item's state within each mode.",
+          "prompt": "Describe the '{system_name}' behaviour in each operational mode (e.g., Standby, Active, Fault, Maintenance). For each mode, specify: (1) triggering conditions, (2) primary functions performed, (3) outputs produced, and (4) transition conditions to other modes. Use precise technical language; avoid subjective terms like 'monitors' or 'handles'.",
           "weight": 1.0,
           "content": ""
         },
         "2_3_performance_requirements": {
           "title": "2.3 Required Quality, Performance, and Availability",
           "clause_ref": "5.4.1 c)",
-          "prompt": "Specify the critical non-functional performance requirements for the {system_name} that are directly relevant to functional safety. This includes defining quantitative targets for accuracy (e.g., sensor measurement precision), response time (e.g., fault detection and reaction delays), reliability (e.g., Mean Time Between Failures - MTBF), and availability (e.g., system uptime percentage). Explain the safety implications if these targets are not met.",
+          "prompt": "Specify quantitative performance requirements relevant to safety. Include: accuracy (±X units), response time (≤Y ms), availability (≥Z%), and reliability (MTBF > W hours). For each, state the safety rationale (e.g., 'Response time ≤10ms ensures safe shutdown before thermal runaway').",
           "weight": 1.0,
           "content": ""
         },
         "2_4_constraints": {
           "title": "2.4 Constraints Regarding the Item",
           "clause_ref": "5.4.1 d)",
-          "prompt": "Outline the environmental constraints (e.g., operating temperature ranges, humidity, vibration levels), functional dependencies (e.g., reliance on specific sensor signals, CAN bus integrity, 12V power supply), and resource constraints (e.g., maximum power consumption, computational capacity) applicable to the {system_name}. Clearly state the assumptions made regarding these constraints for the item to function safely and effectively.",
+          "prompt": "List all constraints affecting the '{system_name}': (1) environmental (temp, humidity, EMC), (2) functional (dependencies on sensors, networks, power), and (3) resource (CPU, memory, power budget). For each, state the assumed operating range and the consequence of violation.",
           "weight": 1.0,
           "content": ""
         },
         "2_5_consequences_of_shortfalls": {
           "title": "2.5 Potential Consequences of Behavioural Shortfalls",
           "clause_ref": "5.4.1 e)",
-          "prompt": "Analyze and describe the potential hazardous events and their consequences resulting from the failure or incorrect behavior of the {system_name}. Detail the potential impact on vehicle safety, occupants, and other road users. This analysis is crucial for input into the Hazard Analysis and Risk Assessment (HARA) to determine ASIL ratings.",
+          "prompt": "For each critical function of the '{system_name}', describe the hazardous event that would result from its failure or malfunction. Specify the potential harm (e.g., 'loss of braking control → collision') and the affected parties (driver, passengers, pedestrians). Link each to a potential safety goal.",
           "weight": 1.0,
           "content": ""
         },
         "2_6_actuator_capabilities": {
           "title": "2.6 Capabilities of the Actuators (or Assumed Capabilities)",
           "clause_ref": "5.4.1 f)",
-          "prompt": "Detail the specific capabilities of the {system_name} to execute safety-related actions. Specify the speed and effectiveness of safety responses, such as the maximum time allowed for contactor opening in a fault condition (e.g., within 30 milliseconds) or the activation time for a cooling request (e.g., within 500 milliseconds). These values are essential for HARA analysis, particularly for determining Severity and Controllability.",
+          "prompt": "Quantify the actuation capabilities of the '{system_name}': (1) maximum response time for safety actions (e.g., 'contactor opens in ≤30ms'), (2) force/torque/current limits, and (3) diagnostic coverage of actuators. These values must support HARA controllability and severity assessments.",
           "weight": 1.0,
           "content": ""
         }
@@ -74,42 +74,42 @@
         "3_1_elements_of_item": {
           "title": "3.1 Elements of the Item",
           "clause_ref": "5.4.2 a)",
-          "prompt": "Define the physical and logical boundaries of the {system_name} by listing all included hardware components (e.g., Electronic Control Unit, sensors, actuators) and software modules. Explicitly state which components, subsystems, or functions are considered outside the scope of this item definition.",
+          "prompt": "List all hardware and software elements within the scope of the '{system_name}'. For hardware: ECU, sensors, actuators. For software: modules, drivers, libraries. Explicitly state what is excluded (e.g., 'Battery cells are out of scope').",
           "weight": 1.0,
           "content": ""
         },
         "3_2_assumptions_on_vehicle_effects": {
           "title": "3.2 Assumptions Concerning Effects on the Vehicle",
           "clause_ref": "5.4.2 b)",
-          "prompt": "Describe the assumed effects of the {system_name}'s behavior on the overall vehicle dynamics and the driver. This includes assumptions such as the driver's expected response to warnings issued by the item, the vehicle's ability to safely transition to a defined safe state if required by the item, and the expected interaction with other vehicle systems during fault conditions.",
+          "prompt": "State assumptions about the vehicle’s response to the '{system_name}' outputs. Examples: 'Driver will react to warning within 2s', 'Vehicle can coast to stop if propulsion is lost', 'Other ECUs will respect safety states'. Assumptions must be verifiable and realistic.",
           "weight": 1.0,
           "content": ""
         },
         "3_3_functionality_required_by_others": {
           "title": "3.3 Functionality Required by Other Items",
           "clause_ref": "5.4.2 c)",
-          "prompt": "Describe the specific functionalities and information provided by the {system_name} that are required by other systems within the vehicle. For example, the Vehicle Control Unit (VCU) may require the State of Charge (SoC) or available power limits from the Battery Management System (BMS), or the charging system may require permission signals.",
+          "prompt": "List functions or data the '{system_name}' provides to other systems. For each, specify: (1) recipient system, (2) data/function provided, (3) update rate, and (4) safety relevance (e.g., 'SoC to VCU: used for torque control').",
           "weight": 1.0,
           "content": ""
         },
         "3_4_dependencies_on_other_items": {
           "title": "3.4 Functionality of Other Items Required by This Item",
           "clause_ref": "5.4.2 d)",
-          "prompt": "Detail the functionalities and data inputs that the {system_name} requires from other systems to operate correctly and safely. This includes mode status information from the VCU, raw sensor data (current, voltage, temperature), communication network availability (e.g., CAN bus), and stable power supply.",
+          "prompt": "List functions or data the '{system_name}' requires from other systems. For each, specify: (1) source system, (2) data/function required, (3) timing dependency, and (4) failure consequence (e.g., 'Loss of VCU mode signal → safe state activation').",
           "weight": 1.0,
           "content": ""
         },
         "3_5_function_allocation": {
           "title": "3.5 Allocation and Distribution of Functions",
           "clause_ref": "5.4.2 e)",
-          "prompt": "Explain how the safety-critical functions associated with the {system_name} are allocated and distributed across different hardware and software components, potentially involving interactions with other vehicle systems. For instance, clarify whether State of Charge estimation is performed solely by the BMS software or involves other systems, or how thermal control actions are coordinated between the BMS and the dedicated cooling system controller.",
+          "prompt": "Describe how safety-critical functions are allocated between hardware and software within the '{system_name}', and across external systems if applicable. Use a table if needed. Specify which entity is responsible for each function (e.g., 'SoC estimation: BMS software').",
           "weight": 1.0,
           "content": ""
         },
         "3_6_operational_scenarios": {
           "title": "3.6 Operational Scenarios Impacting Functionality",
           "clause_ref": "5.4.2 f)",
-          "prompt": "Describe specific operational scenarios that significantly impact the functionality and safety considerations of the {system_name}. Examples include fast charging protocols, cold weather start-up procedures, high-speed driving with sustained power demands, collision detection triggering safety protocols, or operation in extreme environmental conditions. This description is vital for developing realistic scenarios for HARA.",
+          "prompt": "List realistic operational scenarios that challenge the '{system_name}' safety (e.g., 'Fast charging at -20°C', 'Collision during highway driving'). For each, describe: (1) scenario conditions, (2) expected item behaviour, and (3) safety mechanisms activated.",
           "weight": 1.0,
           "content": ""
         }
@@ -117,13 +117,13 @@
     },
     "4_conclusion": {
       "title": "4. Conclusion",
-      "prompt": "Confirm that this Item Definition fully satisfies the requirements outlined in ISO 26262-3:2018, Clause 5.4. Summarize the key aspects covered, including the defined scope, interfaces, functional behavior, constraints, and safety considerations. Affirm its readiness to serve as the basis for the subsequent Hazard Analysis and Risk Assessment (HARA) and Functional Safety Concept development phases.",
+      "prompt": "Confirm that this document satisfies ISO 26262-3:2018 Clause 5.4. State that it provides sufficient detail to proceed to HARA (Clause 6) and Functional Safety Concept (Clause 7). Do not add new information; only affirm completeness and compliance.",
       "weight": 1.0,
       "content": ""
     },
     "5_approvals": {
       "title": "5. Approvals",
-      "prompt": "Include a placeholder table intended for the signatures and dates of key personnel responsible for approving this Item Definition, such as the Safety Engineer, System Architect, and Project Manager.",
+      "prompt": "Insert a table with columns: Role, Name, Signature, Date. Rows: Safety Engineer, System Architect, Project Manager. Do not fill values; leave as placeholders.",
       "weight": 0.5,
       "content": ""
     }
