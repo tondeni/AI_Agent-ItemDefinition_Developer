@@ -1,0 +1,257 @@
+{
+  "metadata": {
+    "standard": "ISO 26262-3:2018",
+    "clause": "Clause 5",
+    "work_product": "5.5.1 – Item definition resulting from requirements in 5.4",
+    "version": "2.0",
+    "generated_date": "{datetime_now}"
+  },
+  "system_info": {
+    "item_name": "{system_name}",
+    "item_id": "{system_id}",
+    "description": "{system_description}"
+  },
+  "sections": {
+    "1_introduction": {
+      "title": "1. Introduction",
+      "clause_ref": "5.1, 5.2",
+      "prompt": "Introduce the '{system_name}' within the context of the vehicle project. State the purpose of this Item Definition document per ISO 26262-3:2018, its scope, and its relationship to the overall vehicle safety concept and system architecture. Identify the target vehicle model(s) and project phase. Be concise and focus on the item's role in functional safety.",
+      "weight": 1.0,
+      "content": ""
+    },
+    "2_overview": {
+      "title": "2. Overview",
+      "clause_ref": "5.4.1",
+      "subsections": {
+        "2_1_vehicle_communication_architecture": {
+          "title": "2.1 Vehicle Communication Architecture",
+          "clause_ref": "5.4.2 d), f)",
+          "prompt": "Describe the '{system_name}' placement in the vehicle communication network. List primary communication protocols used (e.g., CAN, LIN, FlexRay, Ethernet) and identify the ECUs with which this item directly communicates. Mention gateway roles if applicable. Specify communication dependencies and network topology relevant to this item.",
+          "weight": 0.5,
+          "content": ""
+        },
+        "2_2_vehicle_relevant_information": {
+          "title": "2.2 Vehicle Relevant Information",
+          "clause_ref": "5.4.1 d)",
+          "prompt": "Provide key vehicle-level context for the '{system_name}'. Include vehicle classification (e.g., M1 passenger vehicle, N1 light commercial), propulsion type (BEV, PHEV, HEV, ICE), key performance targets affecting this item (e.g., range, acceleration, charging power), and any vehicle variants that impact the item's specification.",
+          "weight": 0.5,
+          "content": ""
+        },
+        "2_3_vehicle_state_machine": {
+          "title": "2.3 Vehicle State Machine",
+          "clause_ref": "5.4.1 b)",
+          "prompt": "Describe the high-level vehicle states (e.g., Off, Sleep, Ignition On, Ready to Drive, Driving, Charging, Service Mode) and explain how the '{system_name}' behaves differently in each state. Focus on states where the item is active or its behavior changes. Define state transition conditions relevant to the item's operation.",
+          "weight": 0.5,
+          "content": ""
+        },
+        "2_4_item_expected_operation": {
+          "title": "2.4 Item Expected Operation",
+          "clause_ref": "5.4.1 b), 5.4.2 f)",
+          "prompt": "Describe the typical operational profile for the '{system_name}'. Include normal usage patterns, duty cycles, expected operational lifetime (hours or km), environmental conditions the item must withstand (climate zones, temperature extremes), and typical load profiles. Mention frequency of use and duration of operation.",
+          "weight": 1.0,
+          "content": ""
+        },
+        "2_5_law_specifications_and_homologation_criteria": {
+          "title": "2.5 Law Specifications and Homologation Criteria",
+          "clause_ref": "5.4.1 a)",
+          "prompt": "List the key legal regulations and homologation requirements directly impacting the '{system_name}'. Include relevant UNECE regulations, FMVSS standards, GB standards, or regional requirements. For each, briefly state its relevance to this item (e.g., 'UNECE R100: Electrical safety during charging'). Focus only on applicable standards.",
+          "weight": 0.4,
+          "content": ""
+        },
+        "2_6_quality_constraints": {
+          "title": "2.6 Quality Constraints",
+          "clause_ref": "5.4.1 c)",
+          "prompt": "Define critical quality requirements for the '{system_name}'. Include reliability targets (e.g., MTBF > X hours, warranty period Y years), manufacturing quality standards (e.g., IATF 16949, Zero Defect targets), and any specific quality gates or acceptance criteria set by the vehicle manufacturer. Quantify where possible.",
+          "weight": 0.5,
+          "content": ""
+        }
+      }
+    },
+    "3_item_description": {
+      "title": "3. Item Description",
+      "clause_ref": "5.4.2",
+      "subsections": {
+        "3_1_item_architecture": {
+          "title": "3.1 Item Architecture",
+          "clause_ref": "5.4.2 a), e)",
+          "prompt": "Describe the internal architecture of the '{system_name}'. For software items, detail the main software modules/components and their interactions. For hardware items, describe sub-assemblies and their connections. For combined HW/SW items, explain how hardware and software components interact and which functions are allocated to which component. Use clear layer separation (e.g., application layer, driver layer, hardware abstraction).",
+          "weight": 1.0,
+          "content": ""
+        },
+        "3_2_block_diagram": {
+          "title": "3.2 Block Diagram",
+          "clause_ref": "5.4.2 a)",
+          "prompt": "Create a textual description of a block diagram for the '{system_name}' showing: (1) main components/modules, (2) internal interfaces and data flows, (3) external interfaces to other vehicle systems, (4) sensors and actuators. Describe the diagram structure clearly so it can be visualized. Alternatively, state that a diagram is provided as an attachment.",
+          "weight": 0.8,
+          "content": ""
+        },
+        "3_3_item_components": {
+          "title": "3.3 Item Components",
+          "clause_ref": "5.4.2 a)",
+          "prompt": "List and describe all main physical and logical components of the '{system_name}'. For each component, specify: (1) component name and type (ECU, sensor, actuator, software module), (2) main responsibility/function, (3) development source (in-house, supplier, COTS). Distinguish between safety-relevant and non-safety-relevant components. Include wiring harnesses if relevant.",
+          "weight": 1.0,
+          "content": ""
+        },
+        "3_4_item_functions": {
+          "title": "3.4 Item Functions",
+          "clause_ref": "5.4.1 b)",
+          "prompt": "Detail all functions performed by the '{system_name}'. **CRITICAL: Focus on vehicle-level functions active during normal operation.** For each function, describe: (1) what it does at vehicle level, (2) under what conditions it operates, (3) inputs and outputs, (4) normal operating parameters. Include safety functions, diagnostic capabilities, and fail-safe mechanisms. **Exclude**: internal diagnostics, service/calibration modes, self-tests not affecting vehicle behavior.",
+          "weight": 1.5,
+          "content": ""
+        },
+        "3_5_item_state_machine": {
+          "title": "3.5 Item State Machine",
+          "clause_ref": "5.4.1 b)",
+          "prompt": "Describe the internal operational states of the '{system_name}' (e.g., Initialization, Normal Operation, Degraded Mode, Fault Mode, Sleep Mode, Service Mode). For each state: (1) define the state purpose, (2) specify entry/exit conditions, (3) describe item behavior in that state, (4) define state transitions and triggering events. This is the item-internal state machine, distinct from the vehicle state machine.",
+          "weight": 0.5,
+          "content": ""
+        }
+      }
+    },
+    "4_requirements_of_the_item": {
+      "title": "4. Requirements of the Item",
+      "clause_ref": "5.4.1",
+      "subsections": {
+        "4_1_functional_behaviour": {
+          "title": "4.1 Functional Behaviour at Vehicle Level",
+          "clause_ref": "5.4.1 b)",
+          "prompt": "Describe the functional behavior of the '{system_name}' **at the vehicle level** during normal operation. For each operating mode (Standby, Active, Fault, Degraded), describe: (1) what the item DOES (vehicle-level action), (2) outputs/effects produced, (3) interaction with driver/vehicle. **Include only functions affecting vehicle behavior observable by driver or other road users. Exclude diagnostic, self-test, and service functions.**",
+          "weight": 1.5,
+          "content": ""
+        },
+        "4_2_performance_requirements": {
+          "title": "4.2 Required Quality, Performance, and Availability",
+          "clause_ref": "5.4.1 c)",
+          "prompt": "Specify quantitative performance requirements relevant to safety for the '{system_name}'. Include: (1) accuracy requirements (±X units), (2) response time requirements (≤Y ms), (3) availability targets (≥Z%), (4) reliability metrics (MTBF > W hours). For each requirement, state the safety rationale and consequence if not met.",
+          "weight": 0.5,
+          "content": ""
+        },
+        "4_3_constraints": {
+          "title": "4.3 Constraints Regarding the Item",
+          "clause_ref": "5.4.1 d)",
+          "prompt": "List all constraints affecting the '{system_name}': (1) Environmental constraints (temperature range, humidity, vibration per ISO 16750-3, EMC per ISO 11452, IP rating), (2) Functional constraints (dependencies on sensors, networks, power supply), (3) Resource constraints (CPU, memory, power budget, physical space). For each constraint, state the operating range and consequence if violated.",
+          "weight": 0.5,
+          "content": ""
+        },
+        "4_4_consequences_of_shortfalls": {
+          "title": "4.4 Potential Consequences of Behavioural Shortfalls",
+          "clause_ref": "5.4.1 e)",
+          "prompt": "For each critical function of the '{system_name}', describe potential hazardous events resulting from malfunction or failure. Use format: [Malfunction] → [Hazardous Event] → [Potential Harm]. Specify affected parties (driver, passengers, pedestrians, other vehicles). These will feed directly into HARA. Be specific and realistic.",
+          "weight": 1.0,
+          "content": ""
+        },
+        "4_5_actuator_capabilities": {
+          "title": "4.5 Capabilities of the Actuators",
+          "clause_ref": "5.4.1 f)",
+          "prompt": "Quantify actuation capabilities of the '{system_name}': (1) maximum response times for safety actions (e.g., 'contactor opens in ≤30ms'), (2) force/torque/current/power limits, (3) diagnostic coverage of actuators (%), (4) actuator effectiveness under various conditions. These values support HARA controllability and severity assessments. Provide specific numbers.",
+          "weight": 0.5,
+          "content": ""
+        }
+      }
+    },
+    "5_boundary_and_interfaces": {
+      "title": "5. Boundary of the Item, Interfaces, and Interaction Assumptions",
+      "clause_ref": "5.4.2",
+      "subsections": {
+        "5_1_elements_of_item": {
+          "title": "5.1 Elements of the Item",
+          "clause_ref": "5.4.2 a)",
+          "prompt": "Define the boundary of the '{system_name}'. List all hardware and software elements INCLUDED in scope: ECUs, sensors, actuators, wiring, software modules, drivers, libraries. Explicitly state what is EXCLUDED (e.g., 'Battery cells are out of scope', 'BCM is a separate item'). Clear boundaries prevent gaps in safety analysis.",
+          "weight": 1.0,
+          "content": ""
+        },
+        "5_2_assumptions_on_vehicle_effects": {
+          "title": "5.2 Assumptions Concerning Effects on the Vehicle",
+          "clause_ref": "5.4.2 b)",
+          "prompt": "State assumptions about vehicle response to '{system_name}' outputs. Examples: 'Driver will react to warning within 2s', 'Vehicle can coast to safe stop if propulsion lost', 'Other ECUs respect safety state commands'. List all critical assumptions affecting safety analysis. Assumptions must be verifiable and realistic.",
+          "weight": 0.8,
+          "content": ""
+        },
+        "5_3_functionality_required_by_others": {
+          "title": "5.3 Functionality Required by Other Items",
+          "clause_ref": "5.4.2 c)",
+          "prompt": "List functions/data the '{system_name}' provides to other systems. For each: (1) recipient system, (2) data/function provided, (3) update rate/timing, (4) safety relevance. Example: 'SoC to VCU: 100ms rate, critical for torque management'. These are your outputs/services to the vehicle.",
+          "weight": 0.5,
+          "content": ""
+        },
+        "5_4_dependencies_on_other_items": {
+          "title": "5.4 Functionality of Other Items Required by This Item",
+          "clause_ref": "5.4.2 d)",
+          "prompt": "List functions/data the '{system_name}' requires from other systems. For each: (1) source system, (2) required data/function, (3) timing dependency, (4) failure consequence. Example: 'VCU mode signal: required within 50ms, loss triggers safe state'. These are your dependencies/inputs.",
+          "weight": 0.5,
+          "content": ""
+        },
+        "5_5_function_allocation": {
+          "title": "5.5 Allocation and Distribution of Functions",
+          "clause_ref": "5.4.2 e)",
+          "prompt": "Describe how safety-critical functions are allocated between hardware and software within '{system_name}', and across external systems.",
+          "weight": 0.5,
+          "content": ""
+        },
+        "5_6_operational_scenarios": {
+          "title": "5.6 Operational Scenarios Impacting Functionality",
+          "clause_ref": "5.4.2 f)",
+          "prompt": "List realistic operational scenarios that challenge '{system_name}' safety. For each scenario: (1) conditions (e.g., 'Fast charging at -20°C', 'Collision during highway driving'), (2) expected item behavior, (3) safety mechanisms activated. Focus on challenging scenarios for HARA input.",
+          "weight": 1.0,
+          "content": ""
+        }
+      }
+    },
+    "6_open_points": {
+      "title": "6. Open Points",
+      "clause_ref": "5.4.7",
+      "prompt": "List any unresolved issues, pending decisions, or critical assumptions requiring clarification for the '{system_name}'. For each open point: (1) description, (2) impact on safety/development, (3) responsible party, (4) target resolution date. Use table format: ID | Issue | Impact | Owner | Due Date.",
+      "weight": 0.2,
+      "content": ""
+    },
+    "7_proven_in_use_candidate": {
+      "title": "7. Proven in Use Argument",
+      "clause_ref": "ISO 26262-8:2018, Clause 12",
+      "prompt": "State whether the '{system_name}' or its components are candidates for 'Proven in Use' argument per ISO 26262-8:2018 Clause 12. If applicable: (1) identify specific components/technologies, (2) describe existing operational field data (hours, units, failure rates), (3) outline the argument structure. If not applicable, state 'Not applicable - new development'.",
+      "weight": 0.2,
+      "content": ""
+    },
+    "8_seooc_development": {
+      "title": "8. SEooC Development Context",
+      "clause_ref": "ISO 26262-8:2018, Clause 13",
+      "prompt": "If the '{system_name}' is developed as a Safety Element out of Context (SEooC) per ISO 26262-8:2018 Clause 13, specify: (1) assumed integration environment, (2) interface requirements for safe integration, (3) necessary operational conditions, (4) assumptions about target vehicle. If not SEooC, state 'Not applicable - developed for specific vehicle platform'.",
+      "weight": 0.2,
+      "content": ""
+    },
+    "9_component_reuse": {
+      "title": "9. Component Reuse",
+      "clause_ref": "ISO 26262-8:2018, Clause 14",
+      "prompt": "For the '{system_name}', identify any reused components (hardware, software, or know-how) per ISO 26262-8:2018 Clause 14. For each reused component: (1) identification and source, (2) justification for reuse, (3) modifications made, (4) how original safety aspects apply or are adapted. If no reuse, state 'All components are new development'.",
+      "weight": 0.2,
+      "content": ""
+    },
+    "10_preliminary_failure_modes": {
+      "title": "10. Preliminary Failure Modes and Potential Effects",
+      "clause_ref": "5.4.1 e)",
+      "prompt": "Identify preliminary failure modes of the '{system_name}' and their immediate effects. Use FMEA-style format: Component | Failure Mode | Local Effect | Item-Level Effect. This is a preliminary analysis to inform HARA. Include only significant failure modes (>5% probability or high severity). Limit to 10-15 most critical failure modes.",
+      "weight": 1.0,
+      "content": ""
+    },
+    "11_abbreviations_and_references": {
+      "title": "11. Abbreviations and References",
+      "clause_ref": "General Documentation",
+      "prompt": "For the '{system_name}' document, create two sections: (1) **Abbreviations**: List all abbreviations used (e.g., 'BMS: Battery Management System', 'SoC: State of Charge'), (2) **References**: List all referenced standards, regulations, and internal documents with full titles and version numbers (e.g., 'ISO 26262-3:2018 - Functional Safety').",
+      "weight": 0.2,
+      "content": ""
+    },
+    "12_conclusion": {
+      "title": "12. Conclusion",
+      "clause_ref": "5.4.7",
+      "prompt": "Confirm that this Item Definition for '{system_name}' satisfies ISO 26262-3:2018 Clause 5.4 requirements. State that it provides sufficient detail to proceed to HARA (Clause 6) and Functional Safety Concept (Clause 7). Summarize document completeness. Do not add new information; only affirm compliance and readiness for next phase.",
+      "weight": 0.4,
+      "content": ""
+    },
+    "13_approvals": {
+      "title": "13. Approvals",
+      "clause_ref": "ISO 26262-8:2018, Clause 6",
+      "prompt": "Create an approval table with columns: Role | Name | Signature | Date. Include rows for: Functional Safety Manager, System Architect, Project Manager, Quality Manager. Leave Name, Signature, and Date as placeholders for manual completion. Add note: 'This document requires formal approval before proceeding to HARA phase'.",
+      "weight": 0.2,
+      "content": ""
+    }
+  }
+}

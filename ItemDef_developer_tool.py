@@ -6,8 +6,10 @@ from cat.mad_hatter.decorators import tool
 from cat.log import log
 
 # Path to templates
-TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_iso26262.json")
+# TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_iso26262.json")
+TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_iso26262_new.json")
 GUIDANCE_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_template_guidance.json")
+
 
 @tool(return_direct=True)
 def generate_iso_26262_item_definition(tool_input, cat):

@@ -30,13 +30,13 @@
           "weight": 1.0,
           "content": ""
         },
-        "2_2_functional_behaviour": {
-          "title": "2.2 Functional Behaviour at Vehicle Level",
-          "clause_ref": "5.4.1 b)",
-          "prompt": "Describe the '{system_name}' behaviour in each operational mode (e.g., Standby, Active, Fault, Maintenance). For each mode, specify: (1) triggering conditions, (2) primary functions performed, (3) outputs produced, and (4) transition conditions to other modes. Use precise technical language; avoid subjective terms like 'monitors' or 'handles'.",
-          "weight": 1.0,
-          "content": ""
-        },
+  "2_2_functional_behaviour": {
+    "title": "2.2 Functional Behaviour at Vehicle Level",
+    "clause_ref": "5.4.1 b)",
+    "prompt": "Describe the functional behavior of the '{system_name}' **at the vehicle level** during normal operation.\n\n**CRITICAL: Only include functions that:**\n- Directly affect vehicle behavior observable by the driver or other road users\n- Are active during normal vehicle operation (driving, parking, charging)\n- Could lead to hazardous events if malfunctioning\n\n**DO NOT include:**\n- Diagnostic functions, self-tests, or service modes\n- Internal monitoring or health management functions\n- Development/calibration functions\n- Functions only active in service/maintenance mode\n\nFor each operating mode (Standby, Active, Fault, Degraded), describe:\n1. What the item DOES (vehicle-level action)\n2. What outputs/effects are produced\n3. How it interacts with the driver/vehicle\n\n**Example (Wiper System):**\nInclude: Wipe windshield to clear rain/snow - affects visibility\nInclude: Operate at variable speeds (low/high/intermittent) - vehicle-level behavior\nExclude: Perform self-diagnostic checks - internal function\nExclude: Calibration mode for service - not during normal operation\n\nSystem: {system_name}\nGenerate vehicle-level functional description now:",
+    "weight": 1.0,
+    "content": ""
+},
         "2_3_performance_requirements": {
           "title": "2.3 Required Quality, Performance, and Availability",
           "clause_ref": "5.4.1 c)",
