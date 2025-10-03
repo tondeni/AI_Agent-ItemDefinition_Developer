@@ -4,7 +4,7 @@
     "clause": "Clause 5",
     "work_product": "5.5.1 – Item definition resulting from requirements in 5.4",
     "document_type": "Template with Guidance",
-    "version": "1.0"
+    "version": "1.1_Aligned"
   },
   "placeholder_system": {
     "item_name": "[Item Name]",
@@ -15,8 +15,11 @@
     "1_introduction": {
       "title": "1. Introduction",
       "clause_ref": "5.1, 5.2",
+      "prompt": "Introduce the '{system_name}' as the 'Item' under ISO 26262-3:2018. Explain its primary function within the vehicle system architecture and its criticality from a functional safety perspective. State the purpose of this Item Definition as the foundational document for subsequent Hazard Analysis and Risk Assessment (HARA) and Functional Safety Concept development. Identify the target audience and stakeholders for this document. Be concise and factual.",
       "guidance": "Introduce the item being defined under ISO 26262-3:2018. Explain:\n- What the item is and its primary function within the vehicle\n- Its role from a functional safety perspective\n- Why this Item Definition is important for subsequent HARA and Functional Safety Concept development\n- The target audience and stakeholders for this document",
-      "example": "This document defines the [Item Name] as the 'Item' under ISO 26262-3:2018. The [Item Name] is responsible for [primary function] and plays a critical role in [vehicle system context]. This definition serves as the foundational document for Hazard Analysis and Risk Assessment (HARA) and guides the development of the Functional Safety Concept."
+      "example": "This document defines the [Item Name] as the 'Item' under ISO 26262-3:2018. The [Item Name] is responsible for [primary function] and plays a critical role in [vehicle system context]. This definition serves as the foundational document for Hazard Analysis and Risk Assessment (HARA) and guides the development of the Functional Safety Concept.",
+      "weight": 0.8,
+      "content": ""
     },
     "2_requirements_of_the_item": {
       "title": "2. Requirements of the Item",
@@ -25,17 +28,21 @@
         "2_1_legal_requirements": {
           "title": "2.1 Legal Requirements, National and International Standards",
           "clause_ref": "5.4.1 a)",
+          "prompt": "List the applicable legal regulations and standards governing the design, development, testing, and safety validation of the '{system_name}'. Include key standards like ISO 26262 parts, region-specific regulations (e.g., UNECE), and relevant industry standards (e.g., ISO 6469). For each, briefly state its specific relevance or applicability to this item.",
           "guidance": "List all applicable legal regulations and standards that govern this item's design, development, testing, and safety validation. Include:\n- ISO 26262 (all relevant parts)\n- Region-specific regulations (UNECE, FMVSS, GB standards, etc.)\n- Industry standards (ISO 6469, IEC 61508, etc.)\n- Any vehicle manufacturer-specific standards",
           "format": "- Standard Name: [Applicability description]\n- UNECE Regulation No. XXX: [What it governs]\n- ISO XXXXX: [Relevance to this item]",
           "examples": [
             "ISO 26262 (All Parts): Functional Safety for road vehicles",
             "UNECE Regulation No. 100: Electric vehicle safety requirements",
             "ISO 6469-1, -2, -3: Electrical safety of electric road vehicles"
-          ]
+          ],
+          "weight": 0.5,
+          "content": ""
         },
         "2_2_functional_behaviour": {
           "title": "2.2 Functional Behaviour at Vehicle Level",
           "clause_ref": "5.4.1 b)",
+          "prompt": "Describe how the '{system_name}' behaves during different vehicle operational contexts and modes. For key modes (e.g., Standby, Normal Operation, Degraded, Safe State, Startup, Shutdown), explain the primary functions executed, the item's state, and transitions. Focus on vehicle-level actions and interactions.",
           "guidance": "Describe how the item behaves across different vehicle operational contexts. For each operating mode, explain:\n- Mode name and triggering conditions\n- Primary functions executed in this mode\n- Item state and expected behavior\n- Transitions to/from other modes",
           "modes_to_consider": [
             "Standby Mode: [System powered but inactive]",
@@ -44,11 +51,14 @@
             "Safe State Mode: [System in safe configuration]",
             "Startup/Initialization Mode: [System boot sequence]",
             "Shutdown Mode: [System power-down sequence]"
-          ]
+          ],
+          "weight": 1.2,
+          "content": ""
         },
         "2_3_performance_requirements": {
           "title": "2.3 Required Quality, Performance, and Availability",
           "clause_ref": "5.4.1 c)",
+          "prompt": "Specify the critical quantitative, non-functional performance requirements for the '{system_name}' that are directly relevant to functional safety. Include accuracy, response times, reliability (MTBF), and availability targets. For each requirement, state the safety implication if it is not met.",
           "guidance": "Specify quantitative non-functional requirements that are safety-relevant. Include:\n- Accuracy requirements (measurement precision, calculation accuracy)\n- Response time requirements (detection delays, reaction times)\n- Reliability metrics (MTBF, failure rates)\n- Availability targets (system uptime percentage)\n- Performance under various conditions",
           "format": "- Metric: [Value] [Unit] – Safety Implication: [What happens if not met]",
           "examples": [
@@ -56,11 +66,14 @@
             "Fault detection response: ≤ 10 ms – Required to prevent thermal runaway",
             "System availability: ≥ 99.9% – Ensures propulsion reliability",
             "MTBF: > 20,000 hours – Meets reliability targets for vehicle lifetime"
-          ]
+          ],
+          "weight": 0.8,
+          "content": ""
         },
         "2_4_constraints": {
           "title": "2.4 Constraints Regarding the Item",
           "clause_ref": "5.4.1 d)",
+          "prompt": "Document the constraints affecting the design and operation of the '{system_name}'. Organize by category: environmental (e.g., temp, vibration, EMC, IP), functional dependencies (e.g., sensors, networks, power), resource constraints (e.g., power, CPU, memory), and key assumptions made.",
           "guidance": "Document all constraints that limit the item's design or operation. Organize by category:",
           "categories": {
             "environmental": [
@@ -88,11 +101,14 @@
               "Expected maintenance intervals",
               "Driver behavior assumptions"
             ]
-          }
+          },
+          "weight": 0.7,
+          "content": ""
         },
         "2_5_consequences_of_shortfalls": {
           "title": "2.5 Potential Consequences of Behavioural Shortfalls",
           "clause_ref": "5.4.1 e)",
+          "prompt": "Identify potential hazardous events resulting from the failure or malfunction of critical functions of the '{system_name}'. Use the format '[Malfunction] → [Hazardous Event] → [Potential Harm]'. Be specific and realistic. This analysis is crucial for input into the HARA process.",
           "guidance": "Identify potential hazards arising from item malfunction. For each hazard:\n- Describe the malfunctioning behavior\n- Explain the resulting hazardous event\n- Detail potential consequences on vehicle safety, occupants, and other road users\n- Note: This feeds directly into HARA analysis",
           "format": "[Malfunction] → [Hazardous Event] → [Potential Consequence]",
           "examples": [
@@ -100,11 +116,14 @@
             "Incorrect state estimation → Unexpected loss of propulsion → Loss of vehicle control",
             "Delayed safety action → Exposure to high voltage → Electric shock risk",
             "False fault detection → Unnecessary system shutdown → Vehicle immobilization"
-          ]
+          ],
+          "weight": 1.0,
+          "content": ""
         },
         "2_6_actuator_capabilities": {
           "title": "2.6 Capabilities of the Actuators (or Assumed Capabilities)",
           "clause_ref": "5.4.1 f)",
+          "prompt": "Specify the capabilities of the '{system_name}' to execute safety-related actions. Quantify critical response times (e.g., contactor opens in X ms) and effectiveness. These values are essential for HARA analysis, particularly for determining Severity and Controllability.",
           "guidance": "Specify how quickly and effectively the item can execute safety-related actions. These values are critical for HARA (Severity and Controllability assessment). Include:\n- Actuator response times\n- Effectiveness of safety responses\n- Limitations of actuator capabilities",
           "format": "- Actuator Name: [Response specification] – Used in HARA for: [Purpose]",
           "examples": [
@@ -112,7 +131,9 @@
             "Warning Display: Visual alert within 1 s – Supports driver awareness (Controllability)",
             "Cooling Pump: Activates within 500 ms – Prevents thermal damage (Severity reduction)",
             "Pre-Charge Circuit: Limits inrush current within 100 ms – Prevents contact welding"
-          ]
+          ],
+          "weight": 0.8,
+          "content": ""
         }
       }
     },
@@ -123,16 +144,20 @@
         "3_1_elements_of_item": {
           "title": "3.1 Elements of the Item",
           "clause_ref": "5.4.2 a)",
+          "prompt": "Define the physical and logical boundary of the '{system_name}'. Clearly list all hardware components (e.g., ECUs, sensors, actuators) and software modules (e.g., application SW, drivers) that are included within this item's scope. Explicitly state what components, subsystems, or functions are considered outside the scope of this item definition.",
           "guidance": "Clearly define what is INCLUDED and EXCLUDED from this item definition. This establishes the scope of safety responsibility.",
           "structure": {
             "included": "- Hardware: [List all ECUs, sensors, actuators, wiring harnesses, etc.]\n- Software: [List all application software, firmware, drivers, etc.]\n- Interfaces: [List communication interfaces like CAN, LIN, etc.]",
             "excluded": "- [Component Name]: [Reason for exclusion - e.g., part of different item]\n- [Component Name]: [Reason for exclusion]"
           },
-          "note": "Clear boundaries prevent gaps in safety analysis and avoid overlapping responsibilities."
+          "note": "Clear boundaries prevent gaps in safety analysis and avoid overlapping responsibilities.",
+          "weight": 1.0,
+          "content": ""
         },
         "3_2_assumptions_on_vehicle_effects": {
           "title": "3.2 Assumptions Concerning Effects on the Vehicle",
           "clause_ref": "5.4.2 b)",
+          "prompt": "Describe the assumptions made about the effects of the '{system_name}' behavior on the overall vehicle dynamics and the driver. This includes assumptions such as the driver's expected response to warnings issued by the item, the vehicle's ability to safely transition to a defined safe state, and the expected interaction with other vehicle systems during fault conditions.",
           "guidance": "Document assumptions about how the item's behavior affects the vehicle and driver. These assumptions support realistic HARA scenarios.",
           "categories": [
             "Driver Response: [How driver is expected to react to warnings/faults]",
@@ -140,11 +165,14 @@
             "Safe State Transition: [How vehicle reaches safe state if required]",
             "Interaction with Driver: [Expected driver actions and timing]",
             "System Coordination: [How other systems respond to this item's state]"
-          ]
+          ],
+          "weight": 0.7,
+          "content": ""
         },
         "3_3_functionality_required_by_others": {
           "title": "3.3 Functionality Required by Other Items",
           "clause_ref": "5.4.2 c)",
+          "prompt": "Describe the specific functionalities and information provided by the '{system_name}' that are required by other systems within the vehicle. For each, specify the receiving system, the data/function provided, and its purpose (e.g., VCU needs SoC for torque control).",
           "guidance": "List what this item provides to other vehicle systems. Other systems depend on these functions operating correctly.",
           "format": "- Receiving System: [Functionality provided] – Purpose: [Why it's needed]",
           "examples": [
@@ -152,11 +180,14 @@
             "Charging System: Charging permission signal – To enable/disable charging",
             "Thermal Management: Temperature data – For cooling control decisions",
             "Instrument Cluster: Status and fault codes – For driver information"
-          ]
+          ],
+          "weight": 0.6,
+          "content": ""
         },
         "3_4_dependencies_on_other_items": {
           "title": "3.4 Functionality of Other Items Required by This Item",
           "clause_ref": "5.4.2 d)",
+          "prompt": "Detail the functionalities and data inputs that the '{system_name}' requires from other systems to operate correctly and safely. For each, specify the providing system, the required data/function, and the consequence if it becomes unavailable (e.g., mode status from VCU, sensor data, CAN bus, 12V power).",
           "guidance": "List what this item needs from other systems to function correctly and safely. These are your dependencies.",
           "format": "- Providing System: [Required functionality] – Impact if unavailable: [Consequence]",
           "examples": [
@@ -164,11 +195,14 @@
             "Sensor Network: Voltage/current/temperature data – Cannot monitor battery state",
             "CAN Bus: Reliable communication – Cannot coordinate with other systems",
             "12V Power Supply: Stable auxiliary power – Item cannot operate"
-          ]
+          ],
+          "weight": 0.6,
+          "content": ""
         },
         "3_5_function_allocation": {
           "title": "3.5 Allocation and Distribution of Functions",
           "clause_ref": "5.4.2 e)",
+          "prompt": "Explain how the safety-critical functions associated with the '{system_name}' are allocated and distributed across its internal components (e.g., different software modules, hardware units). Clarify where each function is implemented.",
           "guidance": "Explain how safety-critical functions are distributed across hardware and software components. Show where each function is implemented and how they coordinate.",
           "format": "Create a table with columns: Function | Implementation Location | Notes",
           "examples": [
@@ -176,11 +210,14 @@
             "Safety Decision Logic | Item Software | Algorithm processes sensor data",
             "Actuator Control | Item Hardware | Drives relays/contactors",
             "Fault Communication | Item → VCU → Cluster | Multi-stage signaling"
-          ]
+          ],
+          "weight": 0.5,
+          "content": ""
         },
         "3_6_operational_scenarios": {
           "title": "3.6 Operational Scenarios Impacting Functionality",
           "clause_ref": "5.4.2 f)",
+          "prompt": "Describe specific operational scenarios that significantly impact the functionality and safety considerations of the '{system_name}'. Examples include fast charging protocols, cold weather start-up, high-speed driving, collision detection, or operation in extreme environmental conditions. This description is vital for developing realistic scenarios for HARA.",
           "guidance": "Describe real-world driving and usage scenarios that significantly impact the item's functionality or safety considerations. These scenarios are used in HARA to assess realistic risk.",
           "scenarios_to_consider": [
             "Normal Driving: [Urban, highway, stop-and-go traffic]",
@@ -189,19 +226,25 @@
             "Edge Cases: [Low state of charge, battery degradation, collision]",
             "Maintenance: [Service mode, diagnostics, software updates]"
           ],
-          "format": "- Scenario Name: [Description] – Impact on Item: [How behavior changes]"
+          "format": "- Scenario Name: [Description] – Impact on Item: [How behavior changes]",
+          "weight": 0.7,
+          "content": ""
         }
       }
     },
     "4_conclusion": {
       "title": "4. Conclusion",
       "clause_ref": "5.4",
+      "prompt": "Confirm that this Item Definition for '{system_name}' fully satisfies the requirements outlined in ISO 26262-3:2018, Clause 5.4. Summarize the key aspects covered, including the defined scope, interfaces, functional behavior, constraints, and safety considerations. Affirm its readiness to serve as the basis for the subsequent Hazard Analysis and Risk Assessment (HARA) and Functional Safety Concept development phases.",
       "guidance": "Confirm that this Item Definition satisfies ISO 26262-3:2018, Clause 5.4 requirements. Summarize:\n- Key aspects covered in this document\n- Completeness of scope, interfaces, and safety considerations\n- Readiness for next phases (HARA, Functional Safety Concept)\n- Any open items or assumptions requiring validation",
-      "example": "This Item Definition document satisfies the requirements of ISO 26262-3:2018, Clause 5.4. It provides comprehensive coverage of the [Item Name]'s functionality, boundaries, interfaces, operational context, and preliminary hazard identification. This definition serves as the foundation for Hazard Analysis and Risk Assessment (HARA) and subsequent Functional Safety Concept development."
+      "example": "This Item Definition document satisfies the requirements of ISO 26262-3:2018, Clause 5.4. It provides comprehensive coverage of the [Item Name]'s functionality, boundaries, interfaces, operational context, and preliminary hazard identification. This definition serves as the foundation for Hazard Analysis and Risk Assessment (HARA) and subsequent Functional Safety Concept development.",
+      "weight": 0.5,
+      "content": ""
     },
     "5_approvals": {
       "title": "5. Approvals",
       "clause_ref": "5.5.1",
+      "prompt": "Include a placeholder table for the signatures and dates of key personnel responsible for approving this Item Definition, such as the Functional Safety Manager, System Architect, and Project Manager. Add a note stating the document requires formal approval.",
       "guidance": "Include formal approval from key stakeholders responsible for functional safety, system architecture, and project management. Document reviews and configuration management.",
       "roles": [
         "Functional Safety Manager",
@@ -214,7 +257,9 @@
         "Document ID: [Unique identifier]",
         "Status: [Draft / In Review / Approved / Released]",
         "Revision History: [Attached or referenced]"
-      ]
+      ],
+      "weight": 0.2,
+      "content": ""
     }
   }
 }
