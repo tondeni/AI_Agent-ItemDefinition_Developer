@@ -6,18 +6,17 @@ from cat.mad_hatter.decorators import tool
 from cat.log import log
 
 # Path to templates
-# TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_iso26262.json")
-TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_iso26262_new.json")
+TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_iso26262.json")
 GUIDANCE_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_template_guidance.json")
 
 
 @tool(return_direct=True)
 def generate_iso_26262_item_definition(tool_input, cat):
     """
-    Create a ISO 26262 Item Definition work product for an automotive system.
+    Generate a complete ISO 26262 Item Definition work product for an automotive system.
 
     Use this tool when the user asks to:
-    - "Generate item definition for [system name]"
+    - "Generate, create, or develop an "item definition" for [system name]"
     - "Create ISO 26262 item definition for [system]"
     - "Develop item definition for [system]"
 
@@ -28,16 +27,17 @@ def generate_iso_26262_item_definition(tool_input, cat):
     - Use bullet points only for simple lists (e.g., modes, constraints).
     - Avoid markdown formatting like **bold** or *italic*.
     
-    Expected tool_input format (JSON string or dict):
-        {
-            "system_name": "Battery Management System",
-            "system_id": "BMS-EV23",
-            "focus_section": "interfaces"  # optional
-        }
-    If tool_input is string, tries to parse as JSON. Otherwise, uses defaults.
+    Input must be a JSON string or dictionary with the following fields:
+    {
+      "system_name": "Name of the automotive system (required)",
+      "system_id": "Optional unique identifier (e.g., BMS-EV23)",
+      "focus_section": "Optional section to emphasize (e.g., 'interfaces', 'boundaries')"
+    }
+
+    If the input is a plain string (not JSON), treat it as the system_name.
     """
     
-    print("✅ TOOL CALLED: generate_iso_26262_item_definition")
+    print("✅ TOOL CALLED: GENERATE ISO 26262 ITEM DEFINITION")
     
     # Default values
     system_name = "Unknown System"
@@ -170,12 +170,31 @@ def generate_iso_26262_item_definition(tool_input, cat):
 @tool(return_direct=True)
 def generate_item_definition_template(tool_input, cat):
     """
-    Generate a ISO 26262 Item Definition template.
+    Generate a ISO 26262 Item Definition template with guidance, structure, and examples.
 
-     Use this tool when the user asks to:
-    - "Generate item definition template"
-    - "Create ISO 26262 item definition template"
-    - "Develop item definition template"
+    Use this tool when the user asks to:
+    - "Generate an item definition template"
+    - "Create an ISO 26262 template"
+    - "Show me a template for item definition"
+    - "Give me a safety work product Item Definition template for automotive systems"
+
+    Input can be:
+      - A plain string containing the system name (e.g., "Brake System")
+      - OR a JSON string with a "system_name" field
+      - If no input is provided, defaults to "[Item Name]"
+
+    Example valid inputs:
+      - "Battery Management System"
+      - '{"system_name": "Steering Control Unit"}'
+
+    The output is a template in plain text, including:
+      - Section headings aligned with ISO 26262 Part 3
+      - Guidance notes for each section
+      - Formatting instructions, examples, and operating modes
+      - Placeholders for system-specific content
+      - No executable code or LLM-generated content—only static template material
+
+    This tool does NOT generate a filled-in work product—use `generate_iso_26262_item_definition` for that.""
 
     """
     
