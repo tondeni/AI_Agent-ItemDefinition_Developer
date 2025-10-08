@@ -9,241 +9,261 @@ from cat.log import log
 TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_iso26262.json")
 GUIDANCE_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "item_definition_template_guidance.json")
 
-
-@tool(return_direct=True)
-def generate_iso_26262_item_definition(tool_input, cat):
+# Helper functions
+def parse_tool_input(tool_input, default_name="[Item Name]"):
     """
-    Generate a complete ISO 26262 Item Definition work product for an automotive system.
-
-    Use this tool when the user asks to:
-    - "Generate, create, or develop an "item definition" for [system name]"
-    - "Create ISO 26262 item definition for [system]"
-    - "Develop item definition for [system]"
-
-    IMPORTANT: 
-    - Use formal, precise, technical language.
-    - **DO NOT USE TABLES.**
-    - Present all information in fluent, structured paragraphs.
-    - Use bullet points only for simple lists (e.g., modes, constraints).
-    - Avoid markdown formatting like **bold** or *italic*.
+    Parse tool input consistently handling both JSON and plain string formats.
     
-    Input must be a JSON string or dictionary with the following fields:
-    {
-      "system_name": "Name of the automotive system (required)",
-      "system_id": "Optional unique identifier (e.g., BMS-EV23)",
-      "focus_section": "Optional section to emphasize (e.g., 'interfaces', 'boundaries')"
-    }
-
-    If the input is a plain string (not JSON), treat it as the system_name.
+    Args:
+        tool_input: String input from LLM (JSON or plain text)
+        default_name: Default system_name if input is empty
+        
+    Returns:
+        dict: Parsed parameters with at least 'system_name'
     """
+    if not tool_input or (isinstance(tool_input, str) and tool_input.strip() == ""):
+        return {"system_name": default_name}
     
-    print("✅ TOOL CALLED: GENERATE ISO 26262 ITEM DEFINITION")
-    
-    # Default values
-    system_name = "Unknown System"
-    system_id = ""
-    focus_section = None
-
-    # Parse tool_input
-    if isinstance(tool_input, str):
+    # Try parsing as JSON
+    if isinstance(tool_input, str) and tool_input.strip().startswith('{'):
         try:
-            tool_input = json.loads(tool_input)
+            parsed = json.loads(tool_input)
+            if isinstance(parsed, dict):
+                return parsed
         except json.JSONDecodeError:
-            # If not valid JSON, treat as system_name
-            system_name = tool_input.strip()
-    if isinstance(tool_input, dict):
-        system_name = tool_input.get("system_name", system_name)
-        system_id = tool_input.get("system_id", system_id)
-        focus_section = tool_input.get("focus_section", focus_section)
+            log.warning(f"Failed to parse JSON input: {tool_input}")
+    
+    # Treat as plain system name
+    if isinstance(tool_input, str):
+        return {"system_name": tool_input.strip()}
+    
+    # Fallback
+    return {"system_name": default_name}
 
+def format_error_message(error_type, details=""):
+    """Format consistent error messages for tools."""
+    error_messages = {
+        "template_not_found": "❌ Template file not found. Please verify plugin installation.",
+        "template_corrupt": "❌ Template file is corrupted. Please reinstall the plugin.",
+        "llm_failed": "❌ Content generation failed. Please try again.",
+        "invalid_input": f"❌ Invalid input format. {details}"
+    }
+    return error_messages.get(error_type, f"❌ Error: {details}")
+
+# Tools
+@tool(
+    return_direct=True,
+    examples=[
+        "generate item definition for Battery Management System",
+        "create item definition for Brake System",
+        "develop ISO 26262 item definition for Steering Control Unit"
+    ]
+)
+def generate_item_definition(tool_input, cat):
+    """Generate ISO 26262 Item Definition document for automotive system.
+    Input: system_name (e.g. 'Battery Management System') or JSON with 'system_name', 'system_id', 'focus_section'.
+    Returns complete work product per ISO 26262-3 Clause 5."""
+    
+    log.info("🔧 TOOL CALLED: generate_item_definition")
+    
+    # Parse input
+    params = parse_tool_input(tool_input, default_name="Unknown System")
+    system_name = params.get("system_name", "Unknown System")
+    system_id = params.get("system_id", "")
+    focus_section = params.get("focus_section")
+    
+    log.info(f"📋 Generating Item Definition for: {system_name}")
+    
     # Load template
     try:
         with open(TEMPLATE_PATH, 'r', encoding='utf-8') as f:
             template = json.load(f)
+    except FileNotFoundError:
+        log.error(f"Template not found: {TEMPLATE_PATH}")
+        return "❌ Error: Template file not found. Please check plugin installation."
+    except json.JSONDecodeError as e:
+        log.error(f"Invalid template JSON: {e}")
+        return "❌ Error: Template file is corrupted."
     except Exception as e:
         log.error(f"Failed to load template: {e}")
         return "❌ Error: Could not load Item Definition template."
-
-    # Personalize metadata
-    now_str = datetime.now().strftime("%Y-%m-%d")
-    template["metadata"]["generated_date"] = now_str
-    template["system_info"]["item_name"] = system_name
-    template["system_info"]["item_id"] = system_id or f"{system_name.upper().replace(' ', '_')}_DEFAULT"
-    template["system_info"]["description"] = f"The {system_name} is a critical automotive system responsible for..."
-
-    # Adjust weights if focus_section is provided
+    
+    # Apply focus weights if specified
     if focus_section:
-        focus_section = focus_section.lower()
         boosted_sections = []
-
-        # Boost top-level sections
-        for sec_key in template["sections"]:
-            sec_data = template["sections"][sec_key]
-            title = sec_data.get("title", "").lower()
-            if focus_section in sec_key.lower() or focus_section in title:
-                sec_data["weight"] = 2.0
+        for sec_key, sec_data in template.get("sections", {}).items():
+            if focus_section.lower() in sec_key.lower():
+                sec_data["weight"] = sec_data.get("weight", 1.0) * 2.0
                 boosted_sections.append(sec_key)
-
-        # Boost subsections
-        for sec_key, sec_data in template["sections"].items():
+            
+            # Check subsections
             if "subsections" in sec_data:
                 for sub_key, sub_data in sec_data["subsections"].items():
-                    sub_title = sub_data.get("title", "").lower()
-                    if focus_section in sub_key.lower() or focus_section in sub_title:
-                        sub_data["weight"] = 2.0
-                        boosted_sections.append(f"{sec_key} -> {sub_key}")
-
-        if not boosted_sections:
-            log.warning(f"Focus section '{focus_section}' not found in template.")
-        else:
-            log.info(f"Boosted sections: {boosted_sections}")
-
+                    if focus_section.lower() in sub_key.lower():
+                        sub_data["weight"] = sub_data.get("weight", 1.0) * 2.0
+                        boosted_sections.append(f"{sec_key}.{sub_key}")
+        
+        if boosted_sections:
+            log.info(f"🎯 Focus sections boosted: {boosted_sections}")
+    
     # Generate content
-    output_lines = []
-    output_lines.append(f"# ISO 26262 Item Definition: {system_name}")
-    output_lines.append(f"*Work Product: {template['metadata']['work_product']}*")
-    output_lines.append(f"*Generated on: {now_str}*")
-    output_lines.append("")
-
-    for sec_key, sec_data in template["sections"].items():
+    now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    output_lines = [
+        f"# ISO 26262 Item Definition: {system_name}",
+        f"*Work Product: {template.get('metadata', {}).get('work_product', 'Item Definition')}*",
+        f"*Generated: {now_str}*",
+        ""
+    ]
+    
+    # Process sections
+    for sec_key, sec_data in template.get("sections", {}).items():
         if "title" not in sec_data:
             continue
-
+        
         title = sec_data["title"]
         output_lines.append(f"## {title}")
+        
         if "clause_ref" in sec_data:
-            output_lines.append(f"*Clause: {sec_data['clause_ref']}*")
-
+            output_lines.append(f"*Reference: {sec_data['clause_ref']}*")
+        
         # Handle subsections
         if "subsections" in sec_data:
             for sub_key, sub_data in sec_data["subsections"].items():
-                sub_title = sub_data["title"]
+                sub_title = sub_data.get("title", "")
                 output_lines.append(f"### {sub_title}")
+                
                 if "clause_ref" in sub_data:
-                    output_lines.append(f"*Clause: {sub_data['clause_ref']}*")
-
-                # Build prompt
-                prompt = sub_data["prompt"].format(
+                    output_lines.append(f"*Reference: {sub_data['clause_ref']}*")
+                
+                # Build LLM prompt
+                prompt_template = sub_data.get("prompt", "")
+                prompt = prompt_template.format(
                     system_name=system_name,
                     system_id=system_id,
                     datetime_now=now_str
                 )
-                if sub_data.get("weight", 1.0) > 1.0:
-                    prompt = f"[FOCUS AREA - IMPORTANT] {prompt}"
-
+                
+                # Add focus marker if weighted
+                if sub_data.get("weight", 1.0) > 1.5:
+                    prompt = f"[HIGH PRIORITY SECTION] {prompt}"
+                
+                # Generate content
                 try:
                     content = cat.llm(prompt)
                     sub_data["content"] = content.strip()
                     output_lines.append(content.strip())
                 except Exception as e:
-                    log.error(f"LLM failed for {sub_key}: {e}")
-                    output_lines.append("[Content generation failed]")
-
+                    log.error(f"LLM generation failed for {sub_key}: {e}")
+                    output_lines.append("[⚠️ Content generation failed - please regenerate]")
+                
                 output_lines.append("")
-
+        
         else:
-            # Top-level section
-            prompt = sec_data["prompt"].format(
+            # Top-level section without subsections
+            prompt_template = sec_data.get("prompt", "")
+            prompt = prompt_template.format(
                 system_name=system_name,
                 system_id=system_id,
                 datetime_now=now_str
             )
-            if sec_data.get("weight", 1.0) > 1.0:
-                prompt = f"[FOCUS AREA - IMPORTANT] {prompt}"
-
+            
+            if sec_data.get("weight", 1.0) > 1.5:
+                prompt = f"[HIGH PRIORITY SECTION] {prompt}"
+            
             try:
                 content = cat.llm(prompt)
                 sec_data["content"] = content.strip()
                 output_lines.append(content.strip())
             except Exception as e:
-                log.error(f"LLM failed for {sec_key}: {e}")
-                output_lines.append("[Content generation failed]")
-
+                log.error(f"LLM generation failed for {sec_key}: {e}")
+                output_lines.append("[⚠️ Content generation failed - please regenerate]")
+            
             output_lines.append("")
-
-    # ✅ SET WORKING MEMORY FLAG FOR FORMATTER PLUGIN
+    
+    # Store in working memory for other plugins
+    generated_content = "\n".join(output_lines)
+    cat.working_memory["item_definition_content"] = generated_content
     cat.working_memory["document_type"] = "item_definition"
     cat.working_memory["system_name"] = system_name
     
-    return "\n".join(output_lines)
-
-@tool(return_direct=True)
-def generate_item_definition_template(tool_input, cat):
-    """
-    Generate a ISO 26262 Item Definition template with guidance, structure, and examples.
-
-    Use this tool when the user asks to:
-    - "Generate an item definition template"
-    - "Create an ISO 26262 template"
-    - "Show me a template for item definition"
-    - "Give me a safety work product Item Definition template for automotive systems"
-
-    Input can be:
-      - A plain string containing the system name (e.g., "Brake System")
-      - OR a JSON string with a "system_name" field
-      - If no input is provided, defaults to "[Item Name]"
-
-    Example valid inputs:
-      - "Battery Management System"
-      - '{"system_name": "Steering Control Unit"}'
-
-    The output is a template in plain text, including:
-      - Section headings aligned with ISO 26262 Part 3
-      - Guidance notes for each section
-      - Formatting instructions, examples, and operating modes
-      - Placeholders for system-specific content
-      - No executable code or LLM-generated content—only static template material
-
-    This tool does NOT generate a filled-in work product—use `generate_iso_26262_item_definition` for that.""
-
-    """
+    log.info(f"✅ Item Definition generated: {len(generated_content)} characters")
     
-    print("✅ TOOL CALLED: generate_item_definition_template")
+    return generated_content
+
+@tool(
+    return_direct=True,
+    examples=[
+        "show item definition template",
+        "give me ISO 26262 template",
+        "create an item definition template"
+    ]
+)
+def get_item_template(tool_input, cat):
+    """Get ISO 26262 Item Definition template with guidance and examples.
+    Input: optional system_name for placeholder (defaults to '[Item Name]').
+    Returns template structure with guidance notes per ISO 26262-3."""
     
-    # Parse system name if provided
-    system_name = "[Item Name]"
-    if isinstance(tool_input, str) and tool_input.strip():
-        system_name = tool_input.strip()
-    elif isinstance(tool_input, dict):
-        system_name = tool_input.get("system_name", system_name)
+    log.info("🔧 TOOL CALLED: get_item_template")
     
-    # Load the template guidance JSON
+    # Parse system name
+    params = parse_tool_input(tool_input, default_name="[Item Name]")
+    system_name = params.get("system_name", "[Item Name]")
+    
+    log.info(f"📋 Generating template for: {system_name}")
+    
+    # Load guidance template
     try:
         with open(GUIDANCE_TEMPLATE_PATH, 'r', encoding='utf-8') as f:
             template = json.load(f)
+    except FileNotFoundError:
+        log.error(f"Guidance template not found: {GUIDANCE_TEMPLATE_PATH}")
+        return "❌ Error: Template guidance file not found."
+    except json.JSONDecodeError as e:
+        log.error(f"Invalid guidance template JSON: {e}")
+        return "❌ Error: Template guidance file is corrupted."
     except Exception as e:
-        log.error(f"Failed to load template guidance: {e}")
-        return "❌ Error: Could not load Item Definition template guidance."
+        log.error(f"Failed to load guidance template: {e}")
+        return "❌ Error: Could not load template guidance."
     
-    # Build content in markdown format
-    output_lines = []
+    # Build template output
+    now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    output_lines = [
+        f"# ISO 26262 Item Definition Template",
+        f"*System: {system_name}*",
+        f"*Document Type: TEMPLATE WITH GUIDANCE*",
+        f"*Generated: {now_str}*",
+        "",
+        "---",
+        ""
+    ]
     
-    # Header
-    now_str = datetime.now().strftime("%Y-%m-%d")
-    output_lines.append(f"# ISO 26262 Item Definition: {system_name}")
-    output_lines.append(f"*Work Product: {template['metadata']['work_product']}*")
-    output_lines.append(f"*Generated on: {now_str}*")
-    output_lines.append(f"*Document Type: {template['metadata']['document_type']}*")
-    output_lines.append("")
-    
-    # Process each section
-    for sec_key, sec_data in template["sections"].items():
+    # Process template sections
+    for sec_key, sec_data in template.get("sections", {}).items():
         if "title" not in sec_data:
             continue
         
-        # Section title
-        output_lines.append(f"## {sec_data['title']}")
+        title = sec_data["title"]
+        output_lines.append(f"## {title}")
+        
         if "clause_ref" in sec_data:
-            output_lines.append(f"*Clause: {sec_data['clause_ref']}*")
-        output_lines.append("")
+            output_lines.append(f"*Reference: {sec_data['clause_ref']}*")
+            output_lines.append("")
+        
+        # Add guidance if present
+        if "guidance" in sec_data:
+            output_lines.append("**Guidance:**")
+            output_lines.append(sec_data["guidance"])
+            output_lines.append("")
         
         # Handle subsections
         if "subsections" in sec_data:
             for sub_key, sub_data in sec_data["subsections"].items():
-                output_lines.append(f"### {sub_data['title']}")
+                sub_title = sub_data.get("title", "")
+                output_lines.append(f"### {sub_title}")
+                
                 if "clause_ref" in sub_data:
-                    output_lines.append(f"*Clause: {sub_data['clause_ref']}*")
-                output_lines.append("")
+                    output_lines.append(f"*Reference: {sub_data['clause_ref']}*")
+                    output_lines.append("")
                 
                 # Add guidance
                 if "guidance" in sub_data:
@@ -251,71 +271,43 @@ def generate_item_definition_template(tool_input, cat):
                     output_lines.append(sub_data["guidance"])
                     output_lines.append("")
                 
-                # Add format if present
+                # Add format instructions
                 if "format" in sub_data:
                     output_lines.append("**Format:**")
                     output_lines.append(sub_data["format"])
                     output_lines.append("")
                 
-                # Add examples if present
+                # Add examples
                 if "examples" in sub_data:
                     output_lines.append("**Examples:**")
                     for example in sub_data["examples"]:
-                        output_lines.append(f"- {example}")
+                        output_lines.append(f"  • {example}")
                     output_lines.append("")
                 
-                # Add modes to consider if present
+                # Add operating modes
                 if "modes_to_consider" in sub_data:
-                    output_lines.append("**Operating Modes to Consider:**")
+                    output_lines.append("**Operating Modes:**")
                     for mode in sub_data["modes_to_consider"]:
-                        output_lines.append(f"- {mode}")
+                        output_lines.append(f"  • {mode}")
                     output_lines.append("")
                 
-                # Add categories if present - FIX HERE
+                # Add categories
                 if "categories" in sub_data:
                     categories = sub_data["categories"]
-                    # Check if it's a dict or list
                     if isinstance(categories, dict):
                         for cat_name, cat_items in categories.items():
                             cat_title = cat_name.replace("_", " ").title()
                             output_lines.append(f"**{cat_title}:**")
                             if isinstance(cat_items, list):
                                 for item in cat_items:
-                                    output_lines.append(f"- {item}")
-                            else:
-                                output_lines.append(str(cat_items))
+                                    output_lines.append(f"  • {item}")
                             output_lines.append("")
-                    elif isinstance(categories, list):
-                        output_lines.append("**Categories:**")
-                        for item in categories:
-                            output_lines.append(f"- {item}")
-                        output_lines.append("")
-                
-                # Add structure if present
-                if "structure" in sub_data:
-                    for struct_name, struct_content in sub_data["structure"].items():
-                        struct_title = struct_name.replace("_", " ").title()
-                        output_lines.append(f"**{struct_title}:**")
-                        output_lines.append(struct_content)
-                        output_lines.append("")
-                
-                # Add note if present
-                if "note" in sub_data:
-                    output_lines.append(f"*Note: {sub_data['note']}*")
-                    output_lines.append("")
-                
-                # Add scenarios to consider if present
-                if "scenarios_to_consider" in sub_data:
-                    output_lines.append("**Scenarios to Consider:**")
-                    for scenario in sub_data["scenarios_to_consider"]:
-                        output_lines.append(f"- {scenario}")
-                    output_lines.append("")
                 
                 output_lines.append("---")
                 output_lines.append("")
         
         else:
-            # Top-level section without subsections
+            # Top-level section guidance
             if "guidance" in sec_data:
                 output_lines.append("**Guidance:**")
                 output_lines.append(sec_data["guidance"])
@@ -326,28 +318,16 @@ def generate_item_definition_template(tool_input, cat):
                 output_lines.append(sec_data["example"])
                 output_lines.append("")
             
-            if "roles" in sec_data:
-                output_lines.append("**Approval Roles:**")
-                for role in sec_data["roles"]:
-                    output_lines.append(f"- {role}: ____________ (Signature) ________ (Date)")
-                output_lines.append("")
-            
-            if "configuration_items" in sec_data:
-                output_lines.append("**Configuration Management:**")
-                for item in sec_data["configuration_items"]:
-                    output_lines.append(f"- {item}")
-                output_lines.append("")
-            
             output_lines.append("---")
             output_lines.append("")
     
-    # Store the generated content in working memory for other plugins (like HARA)
+    # Store in working memory
     generated_content = "\n".join(output_lines)
     cat.working_memory["item_definition_content"] = generated_content
-
-    # Set working memory flags for formatter
     cat.working_memory["document_type"] = "item_definition"
     cat.working_memory["system_name"] = system_name
     cat.working_memory["is_template"] = True
     
-    return "\n".join(output_lines)
+    log.info(f"✅ Template generated: {len(generated_content)} characters")
+    
+    return generated_content

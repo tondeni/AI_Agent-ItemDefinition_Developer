@@ -74,7 +74,7 @@
         "3_1_item_architecture": {
           "title": "3.1 Item Architecture",
           "clause_ref": "5.4.2 a), e)",
-          "prompt": "Describe the internal architecture of the '{system_name}'. Detail main system modules, subsystems, or components and their interactions. Explain how functions are allocated across these system elements. Use clear layer separation (e.g., application layer, driver layer, hardware abstraction layer if applicable). This is essential for understanding safety mechanisms.",
+          "prompt": "Provide a system-level description of the '{system_name}' as defined in ISO 26262-3 Clause 5.4.2. Describe it as a functional unit without internal software details. Include only: (1) main physical components (e.g., ECU, sensors, actuators), (2) external interfaces (e.g., CAN bus, LIN, power supply), (3) user interfaces (e.g., control switch, indicator light), and (4) key interactions with other vehicle systems (e.g., 'receives rain intensity from rain sensor via LIN'). Do not mention software layers, drivers, operating system, or internal module decomposition.",
           "weight": 1.0,
           "content": ""
         },
@@ -95,7 +95,7 @@
         "3_4_item_functions": {
           "title": "3.4 Item Functions",
           "clause_ref": "5.4.1 b)",
-          "prompt": " Detail all primary functions of the '{system_name}' at the vehicle level. This is a preliminary list, cause leter a detailed list and explanation for each function will be provided, so at this point be concise. For each explains what the function does, in which conditions and the inputs/outputs. **Exclude:** internal diagnostics, service modes.",
+          "prompt": " Detail all primary functions of the '{system_name}' at the vehicle level. This is a preliminary list, cause later a detailed list and explanation for each function will be provided, so at this point be concise. For each explains what the function does, in which conditions and the inputs/outputs. **Exclude:** internal diagnostics, service modes.",
           "weight": 1.0,
           "content": ""
         },
@@ -115,7 +115,7 @@
         "4_1_functional_behaviour": {
           "title": "4.1 Functional Behaviour at Vehicle Level",
           "clause_ref": "5.4.1 b)",
-          "prompt": "Describe the primary functional behavior of the '{system_name}' during key operating modes (Normal, Fault, Degraded). Focus on vehicle-level actions and interactions. For each function, identify it with a name (eg. FF-01 , FF02, etc). For each of them, describe what the function does, how the driver can interact, in which conditions, and the inputs/outputs. **Exclude:** internal diagnostics, service modes.",
+          "prompt": "Describe the primary functional behavior of the '{system_name}' during key operating modes (Normal, Fault, Degraded). Focus on vehicle-level actions and interactions. For each function, identify it with a name (eg. FF-01 , FF-02, etc). For each of them, describe what the function does, how the driver can interact, in which conditions, and the inputs/outputs. **Exclude:** internal diagnostics, service modes.",
           "weight": 1.0,
           "content": ""
         },
@@ -136,7 +136,7 @@
         "4_4_consequences_of_shortfalls": {
           "title": "4.4 Potential Consequences of Behavioural Shortfalls",
           "clause_ref": "5.4.1 e)",
-          "prompt": "For each critical function of the '{system name}', described in 'Functional Behaviour at Vehicle Level' section, describe the potential hazardous event if it fails. Use format: [Malfunction] → [Hazardous Event] → [Potential Harm]. This feeds directly into HARA.",
+          "prompt": "For each critical function of the '{system_name}', described in 'Functional Behaviour at Vehicle Level' section, describe the potential hazardous event if it fails. Use format: [Malfunction] → [Hazardous Event] → [Potential Harm]. This feeds directly into HARA.",
           "weight": 1.0,
           "content": ""
         },
@@ -224,13 +224,6 @@
       "prompt": "Identify any reused components for the '{system_name}'. If none, state 'All components are new development'. If yes, list key ones and justification briefly.",
       "weight": 0.1,
       "content": ""
-    },
-    "10_preliminary_failure_modes": {
-      "title": "10. Preliminary Failure Modes and Potential Effects",
-      "clause_ref": "5.4.1 e)",
-      "prompt": "Identify the most critical failure modes of the '{system_name}' and their item-level effects. Use FMEA format: Component | Failure Mode | Item-Level Effect. Focus on high-probability or high-severity modes.",
-      "weight": 1.5,
-          "content": ""
     },
     "11_abbreviations_and_references": {
       "title": "11. Abbreviations and References",
